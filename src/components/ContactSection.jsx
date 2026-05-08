@@ -1,5 +1,5 @@
 import {
-    Instagram,
+    Github,
     Linkedin,
     Mail,
     MapPin,
@@ -15,19 +15,46 @@ import { useState } from "react";
 export const ContactSection = () => {
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const formspreeEndpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const form = e.currentTarget;
 
         setIsSubmitting(true);
 
-        setTimeout(() => {
+        try {
+            if (!formspreeEndpoint) {
+                throw new Error("Missing Formspree endpoint");
+            }
+
+            const response = await fetch(formspreeEndpoint, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                },
+                body: new FormData(form),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to send message");
+            }
+
             toast({
                 title: "Message sent!",
                 description: "Thank you for your message. I'll get back to you soon.",
             });
+            form.reset();
+        } catch (error) {
+            toast({
+                title: "Message not sent",
+                description:
+                    "Please try again in a moment or reach out directly by email.",
+                variant: "destructive",
+            });
+        } finally {
             setIsSubmitting(false);
-        }, 1500);
+        }
     };
     return (
         <section id="contact" className="py-24 px-4 relative bg-secondary/30">
@@ -42,23 +69,23 @@ export const ContactSection = () => {
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <div className="space-y-8">
+                    <div className="space-y-8 text-left">
                         <h3 className="text-2xl font-semibold mb-6">
                             {" "}
                             Contact Information
                         </h3>
 
-                        <div className="space-y-6 justify-center">
+                        <div className="space-y-6">
                             <div className="flex items-start space-x-4">
                                 <div className="p-3 rounded-full bg-primary/10">
                                     <Mail className="h-6 w-6 text-primary" />{" "}
                                 </div>
-                                <div className="space-y-6 justify-center">
+                                <div className="text-left">
 
-                                    <h4 className="font-medium flex items-start space-x-4 mb-0 "> Email</h4>
+                                    <h4 className="font-medium mb-0">Email</h4>
                                     <a
                                         href="mailto:ashishbedi02@gmail.com"
-                                        className="text-muted-foreground hover:text-primary transition-colors flex items-start space-x-4"
+                                        className="text-muted-foreground hover:text-primary transition-colors"
                                     >
                                         ashishbedi02@gmail.com
                                     </a>
@@ -93,31 +120,35 @@ export const ContactSection = () => {
 
                         <div className="pt-8">
                             <h4 className="font-medium mb-4"> Connect With Me</h4>
-                            <div className="flex space-x-4 justify-center">
-                                <a href="#" target="_blank">
+                            <div className="flex space-x-4">
+                                <a
+                                    href="https://www.linkedin.com/in/ashish-bedi-45a6b0256/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     <Linkedin />
                                 </a>
-                                <a href="#" target="_blank">
-                                    <Instagram />
+                                <a
+                                    href="https://github.com/ashishbedi1"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <Github />
                                 </a>
 
                             </div>
                         </div>
                     </div>
 
-                    <div
-                        className="bg-card p-8 rounded-lg shadow-xs"
-                        onSubmit={handleSubmit}
-                    >
-                        <h3 className="text-2xl font-semibold mb-6"> Send a Message</h3>
+                    <div className="bg-card p-8 rounded-lg shadow-xs text-left">
+                        <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
 
-                        <form className="space-y-6">
+                        <form className="space-y-6" onSubmit={handleSubmit}>
                             <div>
                                 <label
                                     htmlFor="name"
-                                    className="block text-sm font-medium mb-2"
+                                    className="block text-sm font-medium mb-2 text-left"
                                 >
-                                    {" "}
                                     Your Name
                                 </label>
                                 <input
@@ -133,9 +164,8 @@ export const ContactSection = () => {
                             <div>
                                 <label
                                     htmlFor="email"
-                                    className="block text-sm font-medium mb-2"
+                                    className="block text-sm font-medium mb-2 text-left"
                                 >
-                                    {" "}
                                     Your Email
                                 </label>
                                 <input
@@ -151,9 +181,8 @@ export const ContactSection = () => {
                             <div>
                                 <label
                                     htmlFor="message"
-                                    className="block text-sm font-medium mb-2"
+                                    className="block text-sm font-medium mb-2 text-left"
                                 >
-                                    {" "}
                                     Your Message
                                 </label>
                                 <textarea

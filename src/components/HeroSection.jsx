@@ -21,8 +21,8 @@ export const HeroSection = () => {
                     </h1>
 
                     <p className="text-lg md:text-xl text-muted-foreground max-2-2xl mx-auto opacity-0 animate-fade-in-delay-3">
-                         Frontend Developer with expertise in React, JavaScript, and modern UI frameworks.
-                         I create scalable, responsive, and intuitive web applications that blend performance with great design.
+                        From database schema to final UI polish, I engineer complete MERN applications that are fast, scalable, and user-focused.
+                        I combine React craftsmanship with backend reliability, Dockerized workflows, GitHub-driven delivery, and confident deployment.
                     </p>
 
                     <div className="pt-4 opacity-0 animate-fade-in-delay-4">

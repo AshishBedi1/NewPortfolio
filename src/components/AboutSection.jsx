@@ -16,16 +16,15 @@ export const AboutSection = () => {
                         </h3>
 
                         <p className="text-muted-foreground">
-                            With over 2 years of experience in web development, I specialize
-                            in creating responsive, accessible, and performant web
-                            applications using modern technologies.
+                            With over 2 years of experience in full stack web development, I
+                            build scalable and maintainable MERN applications that prioritize
+                            performance, accessibility, and clean architecture.
                         </p>
 
                         <p className="text-muted-foreground">
-                            I'm passionate about creating elegant solutions to complex
-                            problems, and I'm constantly learning new technologies and
-                            techniques to stay at the forefront of the ever-evolving web
-                            landscape.
+                            I focus on delivering production-ready solutions through strong
+                            React and Node.js fundamentals, structured GitHub workflows,
+                            Docker-based environments, and reliable server deployments.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
@@ -50,10 +49,11 @@ export const AboutSection = () => {
                                     <Code className="h-6 w-6 text-primary" />
                                 </div>
                                 <div className="text-left">
-                                    <h4 className="font-semibold text-lg"> Web Development</h4>
+                                    <h4 className="font-semibold text-lg">Full Stack MERN Development</h4>
                                     <p className="text-muted-foreground">
-                                        Creating responsive websites and web applications with
-                                        modern frameworks.
+                                        Building end-to-end web applications using MongoDB,
+                                        Express, React, and Node.js with scalable architecture
+                                        and clean code practices.
                                     </p>
                                 </div>
                             </div>
@@ -64,10 +64,12 @@ export const AboutSection = () => {
                                     <User className="h-6 w-6 text-primary" />
                                 </div>
                                 <div className="text-left">
-                                    <h4 className="font-semibold text-lg">API Integration
+                                    <h4 className="font-semibold text-lg">API &amp; Backend Engineering
                                     </h4>
                                     <p className="text-muted-foreground">
-                                        Connecting frontends with REST APIs to deliver real-time, dynamic, and data-driven user experiences.
+                                        Designing and integrating robust REST APIs,
+                                        authentication flows, and data handling to power
+                                        dynamic, reliable user experiences.
                                     </p>
                                 </div>
                             </div>
@@ -79,10 +81,12 @@ export const AboutSection = () => {
                                 </div>
 
                                 <div className="text-left">
-                                    <h4 className="font-semibold text-lg">Performance Optimization
+                                    <h4 className="font-semibold text-lg">Deployment &amp; Performance
                                     </h4>
                                     <p className="text-muted-foreground">
-                                        Ensuring smooth, scalable, and high-performing applications with clean and efficient code.
+                                        Delivering production-ready apps with Docker-based
+                                        workflows, GitHub-driven collaboration, and smooth
+                                        server deployment with performance optimization.
                                     </p>
                                 </div>
                             </div>

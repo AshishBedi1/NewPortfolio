@@ -6,17 +6,20 @@ const skills = [
   { name: "HTML/CSS", level: 95, category: "frontend" },
   { name: "JavaScript", level: 90, category: "frontend" },
   { name: "React", level: 90, category: "frontend" },
-  { name: "TypeScript", level: 85, category: "frontend" },
+  { name: "Material UI", level: 85, category: "frontend" },
   { name: "Tailwind CSS", level: 90, category: "frontend" },
   { name: "Next.js", level: 80, category: "frontend" },
 
   // Backend
-  { name: "Node.js", level: 80, category: "backend" },
-  { name: "Express", level: 75, category: "backend" },
+  { name: "Node.js", level: 85, category: "backend" },
+  { name: "Express.js", level: 82, category: "backend" },
+  { name: "MongoDB", level: 84, category: "backend" },
+  { name: "REST APIs", level: 88, category: "backend" },
 
   // Tools
-  { name: "Git/GitHub", level: 90, category: "tools" },
-  { name: "Figma", level: 85, category: "tools" },
+  { name: "Git/GitHub", level: 92, category: "tools" },
+  { name: "Docker", level: 75, category: "tools" },
+  { name: "Hetzner Server", level: 78, category: "tools" },
   { name: "VS Code", level: 95, category: "tools" },
 ];
 
@@ -44,7 +47,7 @@ export const SkillsSection = () => {
                 "px-5 py-2 rounded-full transition-colors duration-300 capitalize",
                 activeCategory === category
                   ? "bg-primary text-primary-foreground"
-                  : "bg-secondary/70 text-forefround hover:bd-secondary"
+                  : "bg-secondary/70 text-foreground hover:bg-secondary"
               )}
             >
               {category}
