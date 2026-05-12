@@ -1,13 +1,4 @@
-import {
-    Github,
-    Linkedin,
-    Mail,
-    MapPin,
-    Phone,
-    Send,
-    Twitch,
-    Twitter,
-} from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, Phone, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
@@ -15,7 +6,9 @@ import { useState } from "react";
 export const ContactSection = () => {
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const formspreeEndpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT;
+    const contactApiUrl = (
+        import.meta.env.VITE_CONTACT_API_URL || "/api/contact"
+    ).replace(/\/$/, "");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,16 +17,15 @@ export const ContactSection = () => {
         setIsSubmitting(true);
 
         try {
-            if (!formspreeEndpoint) {
-                throw new Error("Missing Formspree endpoint");
-            }
+            const fd = new FormData(form);
+            const name = String(fd.get("name") || "").trim();
+            const email = String(fd.get("email") || "").trim();
+            const message = String(fd.get("message") || "").trim();
 
-            const response = await fetch(formspreeEndpoint, {
+            const response = await fetch(contactApiUrl, {
                 method: "POST",
-                headers: {
-                    Accept: "application/json",
-                },
-                body: new FormData(form),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, message }),
             });
 
             if (!response.ok) {
