@@ -78,7 +78,7 @@ export const ProjectsSection = () => {
                 : "bg-card text-foreground border-border hover:border-primary/60"
             }`}
           >
-            Office Work
+            Professional
           </button>
           <button
             type="button"
