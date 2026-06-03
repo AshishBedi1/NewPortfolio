@@ -1,9 +1,8 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import nodemailer from "nodemailer";
 
-const PORT = Number(process.env.CONTACT_API_PORT || 3001);
+const PORT = Number(process.env.PORT || process.env.CONTACT_API_PORT || 3001);
 
 function escapeHtml(text) {
   return String(text)
@@ -167,17 +166,53 @@ function buildOwnerNotificationEmail({ name, email, message }) {
   return { text, html };
 }
 
+async function sendBrevoEmail({ to, toName, subject, html, text, replyTo, senderName }) {
+  const apiKey = process.env.BREVO_API_KEY;
+  const contactFrom = process.env.CONTACT_FROM;
+
+  const payload = {
+    sender: { name: senderName, email: contactFrom },
+    to: [{ email: to, name: toName || to }],
+    subject,
+    htmlContent: html,
+    textContent: text,
+  };
+
+  if (replyTo) {
+    payload.replyTo = { email: replyTo };
+  }
+
+  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "api-key": apiKey,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errBody = await response.text();
+    throw new Error(`Brevo API error ${response.status}: ${errBody}`);
+  }
+}
+
 const app = express();
 const allowedOrigin = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
 
 app.use(
   cors({
     origin: allowedOrigin,
-    methods: ["POST", "OPTIONS"],
+    methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
   })
 );
 app.use(express.json({ limit: "48kb" }));
+
+app.get("/", (_req, res) => {
+  res.json({ ok: true, service: "portfolio-contact-api" });
+});
 
 app.post("/api/contact", async (req, res) => {
   const { name, email, message } = req.body || {};
@@ -186,28 +221,16 @@ app.post("/api/contact", async (req, res) => {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const contactTo = process.env.CONTACT_TO || smtpUser;
-  const contactFrom = process.env.CONTACT_FROM || smtpUser;
+  const brevoApiKey = process.env.BREVO_API_KEY;
+  const contactTo = process.env.CONTACT_TO;
+  const contactFrom = process.env.CONTACT_FROM;
 
-  if (!smtpHost || !smtpUser || !smtpPass || !contactTo) {
-    console.error("Missing SMTP or CONTACT_TO configuration");
+  if (!brevoApiKey || !contactTo || !contactFrom) {
+    console.error("Missing BREVO_API_KEY, CONTACT_TO, or CONTACT_FROM configuration");
     return res.status(503).json({ error: "Email service not configured" });
   }
 
-  const port = Number(process.env.SMTP_PORT || 587);
-  const secure = process.env.SMTP_SECURE === "true";
-
   try {
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port,
-      secure,
-      auth: { user: smtpUser, pass: smtpPass },
-    });
-
     const trimmedName = String(name).trim();
     const trimmedEmail = String(email).trim();
     const trimmedMessage = String(message).trim();
@@ -218,24 +241,26 @@ app.post("/api/contact", async (req, res) => {
       message: trimmedMessage,
     });
 
-    await transporter.sendMail({
-      from: `"Portfolio" <${contactFrom}>`,
+    await sendBrevoEmail({
       to: contactTo,
-      replyTo: trimmedEmail,
+      toName: "Ashish Bedi",
       subject: `Portfolio: message from ${trimmedName}`,
-      text: ownerMail.text,
       html: ownerMail.html,
+      text: ownerMail.text,
+      replyTo: trimmedEmail,
+      senderName: "Portfolio",
     });
 
     const sendAck = process.env.SEND_ACK_EMAIL !== "false";
     if (sendAck) {
       const ack = buildAckEmail({ name: trimmedName, message: trimmedMessage });
-      await transporter.sendMail({
-        from: `"Ashish Bedi" <${contactFrom}>`,
+      await sendBrevoEmail({
         to: trimmedEmail,
+        toName: trimmedName,
         subject: ack.subject,
-        text: ack.text,
         html: ack.html,
+        text: ack.text,
+        senderName: "Ashish Bedi",
       });
     }
 
@@ -247,5 +272,5 @@ app.post("/api/contact", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Contact API (Nodemailer) listening on http://localhost:${PORT}`);
+  console.log(`Contact API (Brevo) listening on http://localhost:${PORT}`);
 });
