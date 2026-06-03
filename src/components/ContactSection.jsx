@@ -34,7 +34,8 @@ export const ContactSection = () => {
 
             toast({
                 title: "Message sent!",
-                description: "Thank you for your message. I'll get back to you soon.",
+                description:
+                    "Thanks for reaching out. Check your inbox for a confirmation email.",
             });
             form.reset();
         } catch (error) {
